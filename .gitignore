@@ -1,30 +1,133 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
 
-node_modules
-dist
-dist-ssr
-*.local
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
 
-# Editor
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# uv
+# Note: uv.lock is intentionally tracked — it pins all transitive deps for reproducibility.
+# Uncomment the line below only if you deliberately choose not to commit the lock file.
+# uv.lock
+
+# OS
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
 
-# Netlify
-.netlify
+# Secrets
 .env
 .env.*
+# ...but keep checked-in example/templates (never contain real secrets)
 !.env.example
+!**/.env.example
+
+# Project
+*.sqlite
+*.db
+*.jsonl
+*.npz
+*.log
+results/
+logs/
+# Anchored to repo root — DO NOT use the unanchored form `traces/`.
+# hatchling honors .gitignore when building the wheel; an unanchored
+# `traces/` pattern matches src/forgent/traces/ and silently drops
+# the runtime module from the wheel (issue #372).
+/traces/
+coding_task_*
+get-pip.py
+# Junk from mocked-path tests that write to their mock's __repr__ as a path
+MagicMock/
+
+# MkDocs build output
+site/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Desktop
+desktop/node_modules/
+desktop/dist/
+src/forgent/server/static/
+
+# Desktop (Tauri)
+frontend/src-tauri/target/
+
+# Worktrees
+.worktrees/
+
+# Rust
+target/
+
+# Claude plan artifacts
+docs/plans/
+docs/superpowers/
+.superpowers/
+
+# Claude Code project instructions (per-developer)
+CLAUDE.md
+.claude/
+
+# Tauri auto-generated schemas
+**/src-tauri/gen/schemas/
+
+# NFS lock artifacts
+.nfs*
+**/.nfs*
+
+# Research output
+research_mining_*
+.python-version
+src/forgent/channels/whatsapp_baileys_bridge/node_modules/
+
+# SQLite in-memory artifacts
+:memory:
+
+# Dogfood reports (regenerated locally; not for VCS)
+dogfood_report*.md
+
+# Second Repos
+Inline/
+scratch/
+
+# ---------------------------------------------------------------------------
+# Distillation runtime artifacts (defense in depth — these should always live
+# in ~/.forgent/, never inside the source tree, but we ignore them here in
+# case FORGENT_HOME is misconfigured during dev)
+# ---------------------------------------------------------------------------
+.forgent/
+learning.db
+**/learning/sessions/
+**/learning/pending_review/
+**/learning/benchmarks/
+**/teacher_traces/
+*.session.json
+
+# Local dev artifacts (hybrid worker logs + cli debug dumps)
+minion_logs/
+*.fg-debug.json
+fg-debug.*.json
+.netlify/

@@ -1,0 +1,12 @@
+[package]
+name = "forgent-scheduler"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+forgent-core = { path = "../forgent-core" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+rusqlite = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }

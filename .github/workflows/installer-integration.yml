@@ -1,0 +1,118 @@
+name: Installer integration
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/install/**'
+      - 'src/forgent/cli/**'
+      - 'tests/install/**'
+      - '.github/workflows/installer-integration.yml'
+  schedule:
+    - cron: '0 6 * * *'
+
+jobs:
+  container-matrix:
+    name: ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - ubuntu:22.04
+          - ubuntu:24.04
+          - fedora:40
+
+    container: ${{ matrix.image }}
+
+    steps:
+      - name: Install prereqs (Ubuntu/Debian)
+        if: contains(matrix.image, 'ubuntu') || contains(matrix.image, 'debian')
+        run: |
+          apt-get update
+          apt-get install -y curl git python3 sudo
+
+      - name: Install prereqs (Fedora)
+        if: contains(matrix.image, 'fedora')
+        run: |
+          dnf install -y curl git python3 sudo
+
+      - name: Create non-root user
+        run: useradd -m -s /bin/bash testuser
+
+      - uses: actions/checkout@v4
+        with:
+          path: forgent-src
+
+      - name: Install Ollama mock
+        run: install -m 755 "$GITHUB_WORKSPACE/forgent-src/tests/install/bash/stubs/ollama-mock" /usr/local/bin/ollama
+
+      - name: Run installer
+        run: |
+          chown -R testuser:testuser /home/testuser "$GITHUB_WORKSPACE/forgent-src"
+          su testuser -c '
+            export FORGENT_REPO_URL=file://'"$GITHUB_WORKSPACE"'/forgent-src
+            cd '"$GITHUB_WORKSPACE"'/forgent-src
+            bash scripts/install/install.sh --no-bg-orchestrator
+          '
+
+      - name: Verify install state
+        run: |
+          su testuser -c '
+            test -d ~/.forgent/src
+            test -d ~/.forgent/.venv
+            test -f ~/.forgent/config.toml
+            test -f ~/.forgent/.state/install-state.json
+            test -L ~/.local/bin/forgent
+          '
+
+      - name: Verify forgent --version
+        run: su testuser -c '~/.local/bin/forgent --version'
+
+      - name: Verify forgent doctor exits 0
+        run: su testuser -c '~/.local/bin/forgent doctor'
+
+      - name: Verify uninstall is clean
+        run: |
+          su testuser -c '
+            ~/.local/bin/forgent-uninstall
+            test ! -d ~/.forgent
+            test ! -L ~/.local/bin/forgent
+          '
+
+  macos:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Ollama mock
+        run: sudo install -m 755 tests/install/bash/stubs/ollama-mock /usr/local/bin/ollama
+
+      - name: Run installer
+        run: |
+          export FORGENT_REPO_URL=file://$(pwd)
+          bash scripts/install/install.sh --no-bg-orchestrator
+
+      - name: Verify install state
+        run: |
+          test -d ~/.forgent/src
+          test -d ~/.forgent/.venv
+          test -f ~/.forgent/config.toml
+          test -L ~/.local/bin/forgent
+
+      - name: Verify forgent --version
+        run: ~/.local/bin/forgent --version
+
+      - name: Verify forgent doctor exits 0
+        run: ~/.local/bin/forgent doctor
+
+      - name: Verify uninstall is clean
+        run: |
+          ~/.local/bin/forgent-uninstall
+          test ! -d ~/.forgent
+          test ! -L ~/.local/bin/forgent
