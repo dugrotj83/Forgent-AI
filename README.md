@@ -24,6 +24,20 @@
 >
 > Upstream docs & paper: [openjarvis.stanford.edu](https://openjarvis.stanford.edu/) ·
 > [arXiv:2605.17172](https://arxiv.org/abs/2605.17172)
+>
+> **Forgent docs site:** [dugrotj83.github.io/Forgent-AI](https://dugrotj83.github.io/Forgent-AI/)
+> (requires GitHub Pages enabled — see below)
+
+## Docs / GitHub Pages
+
+The docs workflow builds MkDocs and deploys to GitHub Pages. If you see
+**Page not found**, Pages is not enabled on the repo yet:
+
+1. Open [Settings → Pages](https://github.com/dugrotj83/Forgent-AI/settings/pages)
+2. Under **Build and deployment → Source**, choose **GitHub Actions**
+3. Re-run **Deploy Documentation** on `main` (Actions → Deploy Documentation → Run workflow)
+
+Site URL: `https://dugrotj83.github.io/Forgent-AI/`
 
 ## Why Forgent AI?
 

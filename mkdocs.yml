@@ -1,12 +1,12 @@
-site_name: ForgentAI
-site_url: https://github.com/dugrotj83/Forgent-AI/
+site_name: Forgent AI
+site_url: https://dugrotj83.github.io/Forgent-AI/
 site_description: Personal AI, On Personal Devices
-site_author: ForgentAI Contributors
+site_author: Forgent AI Contributors
 repo_url: https://github.com/dugrotj83/Forgent-AI
 repo_name: dugrotj83/Forgent-AI
 edit_uri: edit/main/docs/
 
-copyright: Copyright &copy; 2026 ForgentAI Contributors
+copyright: Copyright &copy; 2026 Forgent AI Contributors
 
 theme:
   name: material

@@ -9,7 +9,7 @@ search:
 
 ForgentAI is a research framework for studying on-device AI systems. Its architecture is organized around **five core abstractions** -- Intelligence, Engine, Agentic Logic, Memory, and Learning -- that work together through trace-driven feedback.
 
-![ForgentAI Architecture](../assets/ForgentAI_Architecture.png)
+![Forgent AI Architecture](../assets/Forgent_Architecture.png)
 
 ---
 
