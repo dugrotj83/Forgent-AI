@@ -31,7 +31,8 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if request.method == "OPTIONS":
             return await call_next(request)
 
-        if self._api_key and self._requires_auth(request.url.path):
+        expected = (self._api_key or "").strip()
+        if expected and self._requires_auth(request.url.path):
             auth = request.headers.get("Authorization", "")
             if not auth:
                 return JSONResponse(
@@ -40,8 +41,9 @@ class AuthMiddleware(BaseHTTPMiddleware):
                 )
             scheme, _, token = auth.partition(" ")
             # Constant-time comparison to avoid leaking the key via timing.
+            # Strip token: clients sometimes paste trailing whitespace.
             if scheme.lower() != "bearer" or not secrets.compare_digest(
-                token, self._api_key
+                token.strip(), expected
             ):
                 return JSONResponse(
                     {"detail": "Invalid API key"},

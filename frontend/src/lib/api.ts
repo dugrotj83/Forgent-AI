@@ -85,11 +85,13 @@ export const getApiKey = (): string => {
     const raw = localStorage.getItem('forgent-settings');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed.apiKey) return String(parsed.apiKey);
+      // Trim: password fields / paste often include trailing newlines or spaces,
+      // which make AuthMiddleware return "Invalid API key".
+      if (parsed.apiKey) return String(parsed.apiKey).trim();
     }
   } catch {}
   if (import.meta.env.VITE_FORGENT_API_KEY) {
-    return import.meta.env.VITE_FORGENT_API_KEY as string;
+    return String(import.meta.env.VITE_FORGENT_API_KEY).trim();
   }
   return '';
 };

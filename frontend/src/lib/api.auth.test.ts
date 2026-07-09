@@ -58,6 +58,15 @@ describe('getApiKey', () => {
     expect(getApiKey()).toBe('sk-local-123');
   });
 
+  it('trims whitespace from pasted apiKey values', async () => {
+    localStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify({ apiKey: '  sk-local-123\n' }),
+    );
+    const { getApiKey } = await freshApi();
+    expect(getApiKey()).toBe('sk-local-123');
+  });
+
   it('returns empty string when the blob has no apiKey field', async () => {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify({ apiUrl: 'http://x' }));
     const { getApiKey } = await freshApi();

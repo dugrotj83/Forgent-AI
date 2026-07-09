@@ -436,13 +436,15 @@ export function SettingsPage() {
                 }}
               />
             </SettingRow>
-            <SettingRow label="API key" description="Required only if the server was started with an API key">
+            <SettingRow label="API key" description="Must match the key from `forgent auth create-key` / FORGENT_API_KEY. Leave blank for keyless localhost.">
               <input
                 type="password"
                 value={settings.apiKey}
-                onChange={(e) => { updateSettings({ apiKey: e.target.value }); showSaved(); }}
-                placeholder="FORGENT_API_KEY"
+                onChange={(e) => { updateSettings({ apiKey: e.target.value.trim() }); showSaved(); }}
+                onBlur={(e) => { updateSettings({ apiKey: e.target.value.trim() }); }}
+                placeholder="oj_sk_… (or leave blank)"
                 autoComplete="off"
+                spellCheck={false}
                 className="text-sm px-3 py-1.5 rounded-lg outline-none w-56"
                 style={{
                   background: 'var(--color-bg-secondary)',
