@@ -25,6 +25,12 @@ class AuthMiddleware(BaseHTTPMiddleware):
         self._api_key = api_key or os.environ.get("FORGENT_API_KEY", "")
 
     async def dispatch(self, request: Request, call_next):  # noqa: ANN001
+        # Browsers send CORS preflight as OPTIONS without Authorization.
+        # Auth must not block those or the real request never fires
+        # ("Failed to fetch" in the web UI).
+        if request.method == "OPTIONS":
+            return await call_next(request)
+
         if self._api_key and self._requires_auth(request.url.path):
             auth = request.headers.get("Authorization", "")
             if not auth:
