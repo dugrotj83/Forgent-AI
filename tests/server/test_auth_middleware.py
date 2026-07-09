@@ -61,6 +61,13 @@ class TestAuthMiddleware:
         )
         assert resp.status_code == 200
 
+    def test_accepts_key_with_trailing_whitespace(self, client):
+        resp = client.get(
+            "/v1/models",
+            headers={"Authorization": "Bearer oj_sk_test123\n"},
+        )
+        assert resp.status_code == 200
+
     def test_health_exempt(self, client):
         resp = client.get("/health")
         assert resp.status_code == 200

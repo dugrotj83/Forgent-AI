@@ -617,7 +617,7 @@ def serve(
     # --- Channel Gateway: API key, sessions, ChannelBridge ---
     import os as _os
 
-    api_key = _os.environ.get("FORGENT_API_KEY", "")
+    api_key = (_os.environ.get("FORGENT_API_KEY", "") or "").strip()
     if not api_key:
         try:
             import tomllib
@@ -625,7 +625,9 @@ def serve(
             _cfg_path = str(get_config_dir() / "config.toml")
             with open(_cfg_path, "rb") as _f:
                 _raw = tomllib.load(_f)
-            api_key = _raw.get("server", {}).get("auth", {}).get("api_key", "")
+            api_key = (
+                _raw.get("server", {}).get("auth", {}).get("api_key", "") or ""
+            ).strip()
         except (FileNotFoundError, ImportError):
             pass
 
