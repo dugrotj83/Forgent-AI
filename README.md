@@ -39,6 +39,19 @@ The docs workflow builds MkDocs and deploys to GitHub Pages. If you see
 
 Site URL: `https://dugrotj83.github.io/Forgent-AI/`
 
+## Netlify (web UI)
+
+The Forgent chat frontend (`frontend/`) deploys to Netlify via `netlify.toml`:
+
+- **Base directory:** `frontend`
+- **Build command:** `npm ci && npm run build:web`
+- **Publish directory:** `frontend/dist` (relative to repo: `dist` under base)
+
+If the Netlify site shows a 404, clear any overridden publish directory in the
+Netlify UI so it uses `netlify.toml`, then trigger a new deploy from `main`.
+
+The full local agent runtime is still `uv run forgent` — Netlify hosts the SPA only.
+
 ## Why Forgent AI?
 
 Personal AI agents are exploding in popularity, but nearly all of them still route intelligence through cloud APIs. Your "personal" AI continues to depend on someone else's server. OpenJarvis showed that local language models already handle most single-turn chat and reasoning queries — and that the missing piece is the software stack.

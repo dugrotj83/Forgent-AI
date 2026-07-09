@@ -1,0 +1,23 @@
+# Netlify hosts the Forgent AI web UI (Vite + React SPA in frontend/).
+# The Python/local runtime is separate — use `uv run forgent` for the full stack.
+
+[build]
+  base = "frontend"
+  command = "npm ci && npm run build:web"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# SPA client-side routing (react-router)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
