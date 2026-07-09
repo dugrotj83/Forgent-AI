@@ -1032,6 +1032,10 @@ class ServerConfig:
             "tauri://localhost",
             "http://tauri.localhost",
             "https://tauri.localhost",
+            # Common Netlify preview/prod hosts for the web UI.
+            # Add your exact site URL in config.toml if it differs.
+            "https://forgent-ai.netlify.app",
+            "http://forgent-ai.netlify.app",
         ]
     )
 
