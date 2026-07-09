@@ -182,3 +182,45 @@ class TestCORSConfiguration:
             assert resp.headers.get("access-control-allow-origin") == origin, (
                 f"Tauri origin {origin} was not allowed by default CORS list"
             )
+
+    def test_private_lan_origins_allowed_for_wsl_dev(self) -> None:
+        """WSL Vite is often opened as http://172.x.x.x:5173 from Windows."""
+        pytest.importorskip("fastapi")
+        from unittest.mock import MagicMock
+
+        from fastapi.testclient import TestClient
+
+        from forgent.server.app import create_app
+
+        mock_engine = MagicMock()
+        mock_engine.health.return_value = True
+        mock_engine.list_models.return_value = ["test-model"]
+
+        app = create_app(mock_engine, "test-model")
+        client = TestClient(app)
+
+        for origin in (
+            "http://172.20.134.129:5173",
+            "http://10.0.0.5:5173",
+            "http://192.168.1.10:5173",
+        ):
+            resp = client.options(
+                "/v1/models",
+                headers={
+                    "Origin": origin,
+                    "Access-Control-Request-Method": "GET",
+                    "Access-Control-Request-Headers": "authorization",
+                },
+            )
+            assert resp.headers.get("access-control-allow-origin") == origin, (
+                f"Private LAN origin {origin} was blocked by CORS"
+            )
+
+        blocked = client.options(
+            "/v1/models",
+            headers={
+                "Origin": "https://evil.example",
+                "Access-Control-Request-Method": "GET",
+            },
+        )
+        assert blocked.headers.get("access-control-allow-origin") != "https://evil.example"

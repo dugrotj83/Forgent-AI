@@ -202,9 +202,22 @@ def create_app(
             "https://tauri.localhost",
         ]
     )
+    # WSL / LAN: Windows Chrome often opens the Vite UI as
+    # http://172.x.x.x:5173 (or 10.x / 192.168.x). Those origins are not
+    # in the localhost allowlist, so the browser reports "Failed to fetch"
+    # even when the API is up. Match RFC1918 + loopback HTTP(S) origins.
+    _private_origin_re = (
+        r"https?://("
+        r"localhost|127\.0\.0\.1|"
+        r"10\.\d{1,3}\.\d{1,3}\.\d{1,3}|"
+        r"192\.168\.\d{1,3}\.\d{1,3}|"
+        r"172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}"
+        r")(:\d+)?"
+    )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=_origins,
+        allow_origin_regex=_private_origin_re,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
